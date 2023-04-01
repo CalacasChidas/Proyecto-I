@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
@@ -15,10 +16,17 @@ import java.io.IOException;
 public class HelloController {
     @FXML
     private ImageView Bomb;
+
+    private ImageView wlindicator;
+    Image loser = new Image(getClass().getResourceAsStream("sad.png"));
     public int difficulty = 0;
     private Stage stage;
     private Scene scene;
     private Parent root;
+
+    public void loserImage(){
+        wlindicator.setImage(loser);
+    }
 
     public void switchToSceneGameDummy(ActionEvent event) throws IOException {
         difficulty = 1;
