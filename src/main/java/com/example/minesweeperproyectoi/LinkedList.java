@@ -7,6 +7,13 @@ public class LinkedList {
         this.head = null;
         this.size = 0;
     }
+    public Node find(int pos){
+        int cont = 0;
+        Node current = this.head;
+        while (cont != pos){
+            current = current.next;
+        }return current;
+    }
     public int size(){
         return this.size;
     }
