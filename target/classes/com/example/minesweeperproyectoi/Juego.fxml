@@ -99,7 +99,7 @@
             <Button mnemonicParsing="false" prefHeight="107.0" prefWidth="150.0" style="-fx-background-color: coral;" GridPane.columnIndex="7" GridPane.rowIndex="7" />
          </children>
       </GridPane>
-      <ImageView fx:id="wlindicator" accessibleRole="BUTTON" fitHeight="150.0" fitWidth="200.0" layoutX="404.0" layoutY="58.0" onMouseClicked="#loserImage" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="wlindicator" accessibleRole="BUTTON" fitHeight="150.0" fitWidth="200.0" layoutX="404.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../img/silly.png" />
          </image>

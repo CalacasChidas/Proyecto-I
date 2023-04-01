@@ -10,8 +10,8 @@ public class LinkedList {
     public int size(){
         return this.size;
     }
-    public void insertFirst(Object data){
-        Node newNode = new Node(data);
+    public void insertFirst(Object data, int bomb){
+        Node newNode = new Node(data, bomb);
         newNode.next = this.head;
         this.head = newNode;
         this.size++;
@@ -26,5 +26,19 @@ public class LinkedList {
             return null;
         }
     }
-
+    public void displayinmatrix() {
+        Node current = this.head;
+        int cont = 0;
+        while (current != null) {
+            if (cont != 8) {
+                System.out.print(current.getData() + "," + " ");
+                cont++;
+                current = current.getNext();
+            } else {
+                System.out.println(" ");
+                System.out.println(" ");
+                cont = 0;
+            }
+        }
+    }
 }
