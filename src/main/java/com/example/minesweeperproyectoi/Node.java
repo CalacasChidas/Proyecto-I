@@ -1,14 +1,19 @@
 package com.example.minesweeperproyectoi;
 
 public class Node {
-    private Object data;
-    public Node next;
+    public Object data;
+    public Node next, last;
     public int bomb;
 
-    public Node(Object data, int bomb){
+
+    public Node(Object data){
         this.next = null;
         this.data = data;
-        this.bomb = bomb;
+        this.last = null;
+    }
+
+    public void setLast(Node last) {
+        this.last = last;
     }
 
     public Object getData(){
@@ -27,3 +32,5 @@ public class Node {
         this.next = next;
     }
 }
+
+

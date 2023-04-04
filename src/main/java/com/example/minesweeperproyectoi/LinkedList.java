@@ -2,27 +2,40 @@ package com.example.minesweeperproyectoi;
 
 public class LinkedList {
     private Node head;
+    private Node tail;
     private int size;
     public LinkedList(){
         this.head = null;
+        this.tail = null;
         this.size = 0;
     }
-    public Node find(int pos){
-        int cont = 0;
-        Node current = this.head;
-        while (cont != pos){
-            current = current.next;
-        }return current;
-    }
+
     public int size(){
         return this.size;
     }
-    public void insertFirst(Object data, int bomb){
-        Node newNode = new Node(data, bomb);
-        newNode.next = this.head;
-        this.head = newNode;
+    public void insertFirst(Object data){
+        Node newNode = new Node(data);
+        if (this.head==null){
+            this.head = this.tail = newNode;
+        }else{
+            newNode.setNext(this.head);
+            this.head.setLast(newNode);
+            newNode.setLast(null);
+            this.head = newNode;
+        }
         this.size++;
     }
+    public Node deleteLast(){
+        if(this.head != null){
+            Node temp = this.tail;
+            this.tail = this.tail.last;
+            this.size--;
+            return temp;
+        }else{
+            return null;
+        }
+    }
+
     public Node deleteFirst(){
         if(this.head != null){
             Node temp = this.head;
@@ -32,6 +45,9 @@ public class LinkedList {
         }else{
             return null;
         }
+    }
+    public Object getLast(){
+        return tail;
     }
     public void displayinmatrix() {
         Node current = this.head;
@@ -49,3 +65,5 @@ public class LinkedList {
         }
     }
 }
+
+
