@@ -1,5 +1,7 @@
 package com.example.minesweeperproyectoi;
 
+import javafx.scene.control.Button;
+
 public class LinkedList {
     private Node head;
     private Node tail;
@@ -13,7 +15,7 @@ public class LinkedList {
     public int size(){
         return this.size;
     }
-    public void insertFirst(Object data){
+    public void insertFirst(Button data){
         Node newNode = new Node(data);
         if (this.head==null){
             this.head = this.tail = newNode;
@@ -63,6 +65,26 @@ public class LinkedList {
                 cont = 0;
             }
         }
+    }
+    public Node find(int x){
+        int cont = 0;
+        Node current = this.head;
+        while (cont != x){
+            current = current.next;
+            cont++;
+        }return current;
+    }
+    public Node finMatrix(int x, int y){
+        int contx = 0;
+        int conty = 0;
+        Node current = this.head;
+        while (contx != x){
+            current = current.next.next.next.next.next.next.next.next;
+            contx++;
+        }while(conty != y){
+            current = current.next;
+            conty++;
+        }return current;
     }
 }
 

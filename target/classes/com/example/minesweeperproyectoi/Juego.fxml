@@ -32,14 +32,14 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="CeroCero" mnemonicParsing="false" prefHeight="54.0" prefWidth="108.0" style="-fx-background-color: coral;" />
-            <Button fx:id="CeroUno" mnemonicParsing="false" prefHeight="110.0" prefWidth="157.0" style="-fx-background-color: coral;" GridPane.columnIndex="1" />
-            <Button fx:id="CeroDos" mnemonicParsing="false" prefHeight="90.0" prefWidth="143.0" style="-fx-background-color: coral;" GridPane.columnIndex="2" />
-            <Button fx:id="CeroTres" mnemonicParsing="false" prefHeight="90.0" prefWidth="129.0" style="-fx-background-color: coral;" GridPane.columnIndex="3" />
-            <Button fx:id="CeroCuatro" mnemonicParsing="false" prefHeight="61.0" prefWidth="113.0" style="-fx-background-color: coral;" GridPane.columnIndex="4" />
-            <Button fx:id="CeroCinco" mnemonicParsing="false" prefHeight="95.0" prefWidth="117.0" style="-fx-background-color: coral;" GridPane.columnIndex="5" />
-            <Button fx:id="CeroSeis" mnemonicParsing="false" prefHeight="82.0" prefWidth="127.0" style="-fx-background-color: coral;" GridPane.columnIndex="6" />
-            <Button fx:id="CeroSiete" mnemonicParsing="false" prefHeight="107.0" prefWidth="129.0" style="-fx-background-color: coral;" GridPane.columnIndex="7" />
+            <Button fx:id="CeroCero" mnemonicParsing="false" onMouseClicked="#T00" prefHeight="54.0" prefWidth="108.0" style="-fx-background-color: coral;" />
+            <Button fx:id="CeroUno" mnemonicParsing="false" onMouseClicked="#T01" prefHeight="110.0" prefWidth="157.0" style="-fx-background-color: coral;" GridPane.columnIndex="1" />
+            <Button fx:id="CeroDos" mnemonicParsing="false" onMouseClicked="#T02" prefHeight="90.0" prefWidth="143.0" style="-fx-background-color: coral;" GridPane.columnIndex="2" />
+            <Button fx:id="CeroTres" mnemonicParsing="false" onMouseClicked="#T03" prefHeight="90.0" prefWidth="129.0" style="-fx-background-color: coral;" GridPane.columnIndex="3" />
+            <Button fx:id="CeroCuatro" mnemonicParsing="false" onMouseClicked="#T04" prefHeight="61.0" prefWidth="113.0" style="-fx-background-color: coral;" GridPane.columnIndex="4" />
+            <Button fx:id="CeroCinco" mnemonicParsing="false" onMouseClicked="#T05" prefHeight="95.0" prefWidth="117.0" style="-fx-background-color: coral;" GridPane.columnIndex="5" />
+            <Button fx:id="CeroSeis" mnemonicParsing="false" onMouseClicked="#T06" prefHeight="82.0" prefWidth="127.0" style="-fx-background-color: coral;" GridPane.columnIndex="6" />
+            <Button fx:id="CeroSiete" mnemonicParsing="false" onMouseClicked="#T07" prefHeight="107.0" prefWidth="129.0" style="-fx-background-color: coral;" GridPane.columnIndex="7" />
             <Button fx:id="UnoCero" mnemonicParsing="false" prefHeight="75.0" prefWidth="116.0" style="-fx-background-color: coral;" GridPane.rowIndex="1" />
             <Button fx:id="UnoUno" mnemonicParsing="false" prefHeight="84.0" prefWidth="154.0" style="-fx-background-color: coral;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button fx:id="UnoDos" mnemonicParsing="false" prefHeight="104.0" prefWidth="132.0" style="-fx-background-color: coral;" GridPane.columnIndex="2" GridPane.rowIndex="1" />

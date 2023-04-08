@@ -1,12 +1,14 @@
 package com.example.minesweeperproyectoi;
 
+import javafx.scene.control.Button;
+
 public class Node {
-    public Object data;
+    public Button data;
     public Node next, last;
     public int bomb;
 
 
-    public Node(Object data){
+    public Node(Button data){
         this.next = null;
         this.data = data;
         this.last = null;
@@ -16,11 +18,11 @@ public class Node {
         this.last = last;
     }
 
-    public Object getData(){
+    public Button getData(){
         return this.data;
     }
 
-    public void setData(Object data) {
+    public void setData(Button data) {
         this.data = data;
     }
 

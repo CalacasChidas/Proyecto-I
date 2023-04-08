@@ -1,5 +1,8 @@
 package com.example.minesweeperproyectoi;
 
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
+
 public class Lista {
     private Node2 head;
     private int size;
@@ -44,8 +47,22 @@ public class Lista {
         }while(conty != y){
             current = current.next;
             conty++;
-        }System.out.println(current.getData());
-        return current;
+        }return current;
+    }
+    public int vecinos(int x, int y){
+        int cont=0, posi=0;
+        while (cont != 5){
+            if (finMatrix(x, posi).isBomb()){
+                break;
+            }else{
+                cont ++;
+                posi++;
+            }
+        }if (cont !=5){
+            return cont;
+        }else{
+            return 0;
+        }
     }
     public void displayinmatrix2() {
         Node2 current = this.head;
