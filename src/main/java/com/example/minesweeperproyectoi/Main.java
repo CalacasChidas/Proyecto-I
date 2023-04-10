@@ -1,3 +1,6 @@
+/**
+ * Clase "Main", inicializador del javaFX, la clase desde donde se inicializa el juego.
+ */
 package com.example.minesweeperproyectoi;
 
 import javafx.application.Application;
@@ -17,6 +20,7 @@ public class Main extends Application {
         stage.setTitle("Minesweeper!");
         stage.setScene(scene);
         stage.show();
+
     }
 
     public static void main(String[] args) {

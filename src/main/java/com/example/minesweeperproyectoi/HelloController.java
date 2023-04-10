@@ -1,27 +1,38 @@
 package com.example.minesweeperproyectoi;
+        import java.time.Clock;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+        import javafx.application.Platform;
+        import javafx.event.ActionEvent;
+        import javafx.event.EventHandler;
+        import javafx.fxml.FXML;
+        import javafx.fxml.FXMLLoader;
+        import javafx.fxml.Initializable;
+        import javafx.scene.Node;
+        import javafx.scene.Parent;
+        import javafx.scene.Scene;
+        import javafx.scene.control.Button;
+        import javafx.scene.control.Label;
+        import javafx.scene.image.Image;
+        import javafx.scene.image.ImageView;
+        import javafx.scene.input.MouseButton;
+        import javafx.scene.layout.Background;
+        import javafx.scene.paint.Color;
+        import javafx.stage.Stage;
+        import javafx.animation.Animation;
+        import javafx.animation.KeyFrame;
+        import javafx.animation.Timeline;
+        import javafx.util.Duration;
+        import java.io.IOException;
+        import java.net.URL;
+        import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
+    /**
+     * Botones de la matrix desde CeroCero, hasta SieteSiete
+     */
+    private Timeline timeline;
+    private int count = 0;
+
     @FXML
     public int difficulty = 0;
     @FXML
@@ -224,17 +235,43 @@ public class HelloController implements Initializable {
 
     @FXML
     private Button UnoUno;
-    //Puedo hacer una clase botón y hacer varas con .whatever
-    /*
-   * public void B00(){
-        CeroCero.setStyle("-fx-background-color: #ff0000");
-    }
-    *public void B01(){
-        CeroUno.setStyle("-fx-background-color: #ff0000");
-    }
-    */
+    @FXML
+    private Label timer;
+
+
+    /**
+     * Creación de la matrix y de la lista de los botones.
+     */
     Lista matrix = new Lista();
     LinkedList buttons = new LinkedList();
+
+    /**
+     * Funciones para crear el cronómetro en el label "timer", lo actualiza cada segundo.
+     */
+    private void startTimer() {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            count++;
+            int minutes = count / 60;
+            int seconds = count % 60;
+            String time = String.format("%02d:%02d", minutes, seconds);
+            Platform.runLater(() -> {
+                timer.setText(time);
+            });
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    private void pauseTimer() {
+        if (timeline != null) {
+            timeline.pause();
+        }
+    }
+
+
+    /**
+     * Funciones asociadas a cada uno de los botones.
+     */
     public void T00(){
         bandera(buttons.finMatrix(0,0).getData(), 0, 0);
     }
@@ -359,7 +396,7 @@ public class HelloController implements Initializable {
         bandera(buttons.finMatrix(3,6).getData(),3,6);
     }
     public void T37(){
-        bandera(buttons.finMatrix(3,6).getData(), 3, 6);
+        bandera(buttons.finMatrix(3,7).getData(), 3, 7);
     }
     public void T40(){
         bandera(buttons.finMatrix(4,0).getData(), 4, 0);
@@ -487,12 +524,21 @@ public class HelloController implements Initializable {
         bandera(buttons.finMatrix(7,7).getData(), 7, 7);
     }
 
+    /**
+     *
+     * @param x
+     * @param i
+     * @param y
+     * bandera(): En realidad esta función es para poner banderas y desbloquear casillas pero me di cuenta del nombre muy tarde.
+     * *BUG*: Si se intenta eliminar una bandera ya puesta, la función es llamada dos veces por alguna razón y lo que hace es quitarla y volverla a quitar con el mismo click.
+     */
     public void bandera(Button x, int i, int y) {
         x.setOnMouseClicked(event -> {
             Node2 node = matrix.finMatrix(i, y);
             if (event.getButton() == MouseButton.SECONDARY) {
                 if (node.isFlag()){
-                    ;
+                    node.setFlag(false);
+                    x.setStyle("-fx-background-color: #FF7F50");
                 }if(node.isOpen()){
                     ;
                 }else {
@@ -508,13 +554,26 @@ public class HelloController implements Initializable {
                     if (node.isBomb()) {
                         x.setText("*");
                     } else {
-                        x.setText(Integer.toString(matrix.vecinos(0, 0)));
+                        int vecino = matrix.neightborsFind(i, y);
+                        String veci = "";
+                        if (vecino != 0){
+                            veci = Integer.toString(vecino);
+                        }else{
+                            ;
+                        }
+                        x.setText(veci);
                     }
                 }
             }
         });
     }
 
+    /**
+     *
+     * @param event
+     * @throws IOException
+     * Función asociada al botón de la pantalla principal para iniciar el juego en modo "dummy".
+     */
     public void switchToSceneGameDummy(ActionEvent event) throws IOException {
         difficulty = 1;
         System.out.println(difficulty);
@@ -523,8 +582,17 @@ public class HelloController implements Initializable {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    }
+        matrix.displayinmatrix2();
+        pauseTimer();
+        pauseTimer();
 
+    }
+    /**
+     *
+     * @param event
+     * @throws IOException
+     * Función asociada al botón de la pantalla principal para iniciar el juego en modo "Normal".
+     */
     public void switchToSceneGameNormal(ActionEvent event) throws IOException {
         difficulty = 2;
         System.out.println(difficulty);
@@ -533,11 +601,16 @@ public class HelloController implements Initializable {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
+        matrix.displayinmatrix2();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        startTimer();
+
+        /**
+         * Adición de todos los botones a la lista "buttons"
+         */
         buttons.insertFirst(SieteSiete);
         buttons.insertFirst(SieteSeis);
         buttons.insertFirst(SieteCinco);
@@ -602,7 +675,10 @@ public class HelloController implements Initializable {
         buttons.insertFirst(CeroDos);
         buttons.insertFirst(CeroUno);
         buttons.insertFirst(CeroCero);
-
+        /**
+         * Creación de la matrix con respecto a los botones y aleatoriedad de las bombas.
+         * *BUG*: La matrix se imprime al revés.
+         */
         int bomb = (int) (Math.random() + (15) + 1), x = 0,cont = 0;
         for (int i = 0; i < 8; i++) {
             boolean bombax = Math.random() < 0.5;
@@ -610,20 +686,22 @@ public class HelloController implements Initializable {
                 if (x <= bomb) {
                     boolean bombay = Math.random() < 0.5, bombaw = Math.random() < 0.5;
                     if (bombax && bombay && bombaw) {
-                        matrix.insertFirst(buttons.find(cont), i, y, bombaw);
+                        matrix.insertFirst(buttons.find(cont).data, i, y, bombaw);
                         cont++;
                         x++;
                     } else {
-                        matrix.insertFirst(buttons.find(cont), i, y, false);
+                        matrix.insertFirst(buttons.find(cont).data, i, y, false);
                         cont++;
                     }
                 } else {
-                    matrix.insertFirst(buttons.find(cont), i, y, false);
+                    matrix.insertFirst(buttons.find(cont).data, i, y, false);
                     cont++;
                 }
             }
         }
-        matrix.displayinmatrix2();
+
     }
-    }
+}
+
+
 

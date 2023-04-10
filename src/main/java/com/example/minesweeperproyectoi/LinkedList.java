@@ -1,11 +1,17 @@
+/**
+ * Lista #1
+ */
 package com.example.minesweeperproyectoi;
 
 import javafx.scene.control.Button;
-
 public class LinkedList {
     private Node head;
     private Node tail;
     private int size;
+
+    /**
+     * Constructor de la Lista #1.
+     */
     public LinkedList(){
         this.head = null;
         this.tail = null;
@@ -15,6 +21,12 @@ public class LinkedList {
     public int size(){
         return this.size;
     }
+    /**
+     *
+     * @param data Buttom
+     * @return void
+     * insertFirst: Inserta un nodo al inicio de la lista, recibiendo los parámetros data.
+     */
     public void insertFirst(Button data){
         Node newNode = new Node(data);
         if (this.head==null){
@@ -27,30 +39,12 @@ public class LinkedList {
         }
         this.size++;
     }
-    public Node deleteLast(){
-        if(this.head != null){
-            Node temp = this.tail;
-            this.tail = this.tail.last;
-            this.size--;
-            return temp;
-        }else{
-            return null;
-        }
-    }
-
-    public Node deleteFirst(){
-        if(this.head != null){
-            Node temp = this.head;
-            this.head = this.head.next;
-            this.size--;
-            return temp;
-        }else{
-            return null;
-        }
-    }
-    public Object getLast(){
-        return tail;
-    }
+    /**
+     * Parámetros: Ningundo
+     * Retorna: void
+     * displayinmatrix: Este método imprime en forma de matrix la lista utilizada. Toma un valor x y un valor y y acomoda la matrix
+     * dependiendo de su posición de forma [x, y]. Además, pone un * en las celdas donde se encuentra una mina. *[x, y].
+     * */
     public void displayinmatrix() {
         Node current = this.head;
         int cont = 0;
@@ -66,6 +60,14 @@ public class LinkedList {
             }
         }
     }
+
+    /**
+     *
+     * @param x
+     * @return Node current.
+     * find(): Busca en la lista el nodo en posición x (no lo busca como matrix si no como lista enlazada sencilla).
+     * Retorna el nodo encontrado.
+     */
     public Node find(int x){
         int cont = 0;
         Node current = this.head;
@@ -74,6 +76,13 @@ public class LinkedList {
             cont++;
         }return current;
     }
+    /**
+     *
+     * @param x int
+     * @param y int
+     * @return Node2
+     * finMatrix: Busca una posición en la matrix recibiendo la posición en x y y. Retorna el nodo encontrado.
+     */
     public Node finMatrix(int x, int y){
         int contx = 0;
         int conty = 0;

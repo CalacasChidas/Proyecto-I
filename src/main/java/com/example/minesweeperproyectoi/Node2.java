@@ -1,7 +1,12 @@
+/**
+ * Node #2
+ */
 package com.example.minesweeperproyectoi;
 
+import javafx.scene.control.Button;
+//Node2
 public class Node2 {
-    private Object data;
+    private Button data;
     public Node2 next;
     public int x;
     public int y;
@@ -9,7 +14,15 @@ public class Node2 {
     public boolean flag;
     public boolean open;
 
-    public Node2(Object data, int x, int y, boolean bomb){
+    /**
+     *
+     * @param data
+     * @param x
+     * @param y
+     * @param bomb
+     * Constructor del Nodo #2
+     */
+    public Node2(Button data, int x, int y, boolean bomb){
         this.next = null;
         this.data = data;
         this.x = x;
@@ -17,6 +30,19 @@ public class Node2 {
         this.bomb = bomb;
         this.flag = false;
         this.open = false;
+    }
+
+    /**
+     *get_(): getters de información.
+     *set_(): setters de información.
+     *is_(): getters de booleans.
+     */
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public boolean isOpen() {
@@ -39,16 +65,16 @@ public class Node2 {
         }
     }
 
+
     public void setFlag(boolean flag) {
         this.flag = flag;
-        System.out.println(this.flag);
     }
 
-    public Object getData(){
+    public Button getData(){
         return this.data;
     }
 
-    public void setData(Object data) {
+    public void setData(Button data) {
         this.data = data;
     }
 
