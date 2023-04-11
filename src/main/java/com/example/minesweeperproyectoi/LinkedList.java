@@ -17,6 +17,9 @@ public class LinkedList {
         this.tail = null;
         this.size = 0;
     }
+    public Node random(){
+        return find((int) (Math.random() + (size) + 1));
+    }
 
     public int size(){
         return this.size;

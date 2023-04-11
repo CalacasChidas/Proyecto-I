@@ -32,6 +32,7 @@ public class HelloController implements Initializable {
      */
     private Timeline timeline;
     private int count = 0;
+    int bomb = (int) (Math.random() + (15) + 1), x = 0,cont = 0;
 
     @FXML
     public int difficulty = 0;
@@ -176,8 +177,6 @@ public class HelloController implements Initializable {
     @FXML
     private Button SieteDos;
 
-    @FXML
-    private Button SieteSeit;
 
     @FXML
     private Button SieteSiete;
@@ -236,14 +235,24 @@ public class HelloController implements Initializable {
     @FXML
     private Button UnoUno;
     @FXML
+    private Button clue;
+    @FXML
+    private Button mainmenu;
+    @FXML
     private Label timer;
-
+    @FXML
+    private Label minas;
+    @FXML
+    private Label win;
+    int contminas = 0;
 
     /**
-     * Creación de la matrix y de la lista de los botones.
+     * Creación de listas.
      */
     Lista matrix = new Lista();
     LinkedList buttons = new LinkedList();
+    Lista4 safeList = new Lista4();
+    Lista4 uncertainty = new Lista4();
 
     /**
      * Funciones para crear el cronómetro en el label "timer", lo actualiza cada segundo.
@@ -532,20 +541,148 @@ public class HelloController implements Initializable {
      * bandera(): En realidad esta función es para poner banderas y desbloquear casillas pero me di cuenta del nombre muy tarde.
      * *BUG*: Si se intenta eliminar una bandera ya puesta, la función es llamada dos veces por alguna razón y lo que hace es quitarla y volverla a quitar con el mismo click.
      */
+
+    int contJugadas = 0;
+    Stack pila = new Stack();
+    public void clue() {
+        if(pila.isEmpty() == 0){
+            clue.setText("Vacío");
+        }else{
+            clue.setText(pila.pop());
+        }
+    }
     public void bandera(Button x, int i, int y) {
         x.setOnMouseClicked(event -> {
             Node2 node = matrix.finMatrix(i, y);
             if (event.getButton() == MouseButton.SECONDARY) {
                 if (node.isFlag()){
-                    node.setFlag(false);
-                    x.setStyle("-fx-background-color: #FF7F50");
+                    if(node.isBomb()){
+                        ++contminas;
+                        minas.setText(Integer.toString(contminas));
+                    }
+                    if(contminas==bomb){
+                        win.setText("You win!!!");
+                        pauseTimer();
+                    }else {
+                        node.setFlag(false);
+                        x.setStyle("-fx-background-color: #FF7F50");
+                    }
                 }if(node.isOpen()){
                     ;
                 }else {
-                    x.setStyle("-fx-background-color: #ff0000");
-                    node.setFlag(true);
+                    if(node.isBomb()){
+                        ++contminas;
+                        minas.setText(Integer.toString(contminas));
+                        x.setStyle("-fx-background-color: #ff0000");
+                        node.setFlag(true);
+                    }else {
+                        x.setStyle("-fx-background-color: #ff0000");
+                        node.setFlag(true);
+                    }
                 }
             } else if (event.getButton() == MouseButton.PRIMARY) {
+                if (node.isOpen()) {
+                    ;
+                } else {
+                    if(node.isBomb()){
+                        x.setText("*");
+                        x.setStyle("-fx-background-color: #ffffff");
+                        win.setText("You lost!");
+                        pauseTimer();
+
+                    }
+                     else {
+                         if(contJugadas % 5 == 0){
+                             Node4 x1 =safeList.random();
+                             pila.push(x1.getX(), x1.getY());
+                             int vecino = matrix.neightborsFind(i, y);
+                             String veci = "";
+                             if (vecino != 0){
+                                 veci = Integer.toString(vecino);
+                             }else{
+                                 ;
+                             }x.setText(veci);
+                             x.setStyle("-fx-background-color: #ffffff");
+                         }else{
+                             contJugadas++;
+                             int vecino = matrix.neightborsFind(i, y);
+                             String veci = "";
+                             if (vecino != 0){
+                                 veci = Integer.toString(vecino);
+                             }else{
+                                 ;
+                             }x.setText(veci);
+                             x.setStyle("-fx-background-color: #ffffff");
+                         }
+                    }
+                } AI();
+            }
+        });
+    }
+    public void AI() {
+        if (difficulty == 2) {
+            if (safeList.getSize() != 0) {
+                int i = safeList.random().getX(), y = safeList.random().getY();
+                Node2 node = matrix.finMatrix(i, y);
+                Button x = buttons.finMatrix(i, y).getData();
+                if (node.isOpen()) {
+                    AI();
+                } else {
+                    x.setStyle("-fx-background-color: #ffffff");
+                    node.setOpen(true);
+                    if (node.isBomb()) {
+                        x.setText("*");
+                        pauseTimer();
+                        win.setText("You win!");
+                    } else {
+                        int vecino = matrix.neightborsFind(i, y);
+                        String veci = "";
+                        if (vecino != 0) {
+                            veci = Integer.toString(vecino);
+                        } else {
+                            ;
+                        }
+                        x.setText(veci);
+                    }
+                }
+                }else{
+                    int i = uncertainty.random().getX(), y = uncertainty.random().getY();
+                    Node2 node = matrix.finMatrix(i, y);
+                    Button x = buttons.finMatrix(i, y).getData();
+                    if (node.isOpen()) {
+                        ;
+                    } else {
+                        x.setStyle("-fx-background-color: #ffffff");
+                        node.setOpen(true);
+                        if (node.isBomb()) {
+                            x.setText("*");
+                            pauseTimer();
+                            win.setText("You win!");
+                        } else {
+                            int vecino = matrix.neightborsFind(i, y);
+                            String veci = "";
+                            if (vecino != 0) {
+                                veci = Integer.toString(vecino);
+                            } else {
+                                ;
+                            }
+                            x.setText(veci);
+                        }
+                    }
+                }
+            } else {
+
+                Lista4 aleatorio = null;
+                int random = (int) (Math.random() + (1) + 1);
+                if (random == 0) {
+                    aleatorio = uncertainty;
+                } else {
+                    aleatorio = safeList;
+                }
+                Node4 noderan = aleatorio.random();
+                int i = noderan.getX(), y = noderan.getY();
+                Node2 node = matrix.finMatrix(i, y);
+                Button x = buttons.finMatrix(i, y).getData();
                 if (node.isOpen()) {
                     ;
                 } else {
@@ -553,20 +690,21 @@ public class HelloController implements Initializable {
                     node.setOpen(true);
                     if (node.isBomb()) {
                         x.setText("*");
+                        pauseTimer();
+                        win.setText("You win!");
                     } else {
                         int vecino = matrix.neightborsFind(i, y);
                         String veci = "";
-                        if (vecino != 0){
+                        if (vecino != 0) {
                             veci = Integer.toString(vecino);
-                        }else{
+                        } else {
                             ;
                         }
                         x.setText(veci);
                     }
                 }
             }
-        });
-    }
+        }
 
     /**
      *
@@ -585,7 +723,21 @@ public class HelloController implements Initializable {
         matrix.displayinmatrix2();
         pauseTimer();
         pauseTimer();
-
+    }
+    /**
+     *
+     * @param event
+     * @throws IOException
+     * Función asociada al botón de la pantalla Juego para devolverse al menú principal y reiniciar el juego (Botón de Walter White).
+     */
+    public void mainMenu(ActionEvent event) throws IOException {
+        System.out.println("Ur in main manu");
+        Parent root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+        pauseTimer();
     }
     /**
      *
@@ -602,12 +754,16 @@ public class HelloController implements Initializable {
         stage.setScene(scene);
         stage.show();
         matrix.displayinmatrix2();
+        pauseTimer();
+        pauseTimer();
+
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         startTimer();
-
+        safeList.random();
+        System.out.println((int) (Math.random() * ((15) + 1)));
         /**
          * Adición de todos los botones a la lista "buttons"
          */
@@ -696,6 +852,20 @@ public class HelloController implements Initializable {
                 } else {
                     matrix.insertFirst(buttons.find(cont).data, i, y, false);
                     cont++;
+                }
+            }
+        }
+        /**
+         * Creación de la lista segura.
+         */
+        for (int u = 0; u<8; u++){
+            for (int p = 0; p<8; p++){
+                if(matrix.isBombBo(u, p)){
+                    uncertainty.insertFirst(matrix.finMatrix(u, p).getX(), matrix.finMatrix(u, p).getY());
+                }else if(matrix.neightborsFind(u, p)==0){
+                    safeList.insertFirst(matrix.finMatrix(u, p).getX(), matrix.finMatrix(u, p).getY());
+                    }else{
+                        uncertainty.insertFirst(matrix.finMatrix(u, p).getX(), matrix.finMatrix(u, p).getY());
                 }
             }
         }
