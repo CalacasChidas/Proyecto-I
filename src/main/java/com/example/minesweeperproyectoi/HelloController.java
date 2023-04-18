@@ -1,6 +1,6 @@
 package com.example.minesweeperproyectoi;
+        import java.io.Serial;
         import java.time.Clock;
-
         import javafx.application.Platform;
         import javafx.event.ActionEvent;
         import javafx.event.EventHandler;
@@ -17,22 +17,27 @@ package com.example.minesweeperproyectoi;
         import javafx.scene.input.MouseButton;
         import javafx.scene.layout.Background;
         import javafx.scene.paint.Color;
+        import javafx.scene.shape.Circle;
         import javafx.stage.Stage;
         import javafx.animation.Animation;
         import javafx.animation.KeyFrame;
         import javafx.animation.Timeline;
         import javafx.util.Duration;
+        import jssc.*;
+
         import java.io.IOException;
         import java.net.URL;
         import java.util.ResourceBundle;
+        import java.util.Scanner;
+
 
 public class HelloController implements Initializable {
     /**
      * Botones de la matrix desde CeroCero, hasta SieteSiete
      */
     private Timeline timeline;
-    private int count = 0;
-    int bomb = (int) (Math.random() + (15) + 1), x = 0,cont = 0;
+    int bomb = (int) (Math.random() + (15) + 1), x = 0,cont = 0, prevx = 0, prevy = 0, count = 0, xarduino = 0, yarduino = 0;
+    SerialPort sp = new SerialPort("COM3");
 
     @FXML
     public int difficulty = 0;
@@ -244,6 +249,8 @@ public class HelloController implements Initializable {
     private Label minas;
     @FXML
     private Label win;
+    @FXML
+    private Label casillaArduino;
     int contminas = 0;
 
     /**
@@ -532,7 +539,133 @@ public class HelloController implements Initializable {
     public void T77(){
         bandera(buttons.finMatrix(7,7).getData(), 7, 7);
     }
+    int contJugadas = 0;
+    Stack pila = new Stack();
 
+    /**
+     * clue(): Es el creador de las pistas.
+     */
+    public void clue() {
+        if(pila.isEmpty() == 0){
+            clue.setText("Vacío");
+        }else{
+            clue.setText(pila.pop());
+        }
+    }
+
+    /**
+     * Función para utilizar el arduino
+     * BUG: presenta el mismo problema de las listas, algunos botones los reconoce como nulos
+     */
+    @FXML
+    private void conectar(){
+        try{
+            sp.openPort();
+            sp.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            sp.addEventListener((SerialPortEvent event) -> {
+                if (event.isRXCHAR()) {
+                    try {
+                        String x = sp.readString();
+                        if (x.equals("w")) {
+                            System.out.println("w");
+                            if (xarduino-1 >=0) {
+                                xarduino--;
+                                ino(xarduino, yarduino);
+                            }else{
+                                ;
+                            }
+                        }
+                        if(x.equals("a")){
+                            System.out.println("a");
+
+                            if (yarduino-1 >=0){
+                                yarduino--;
+                                ino(xarduino, yarduino);
+                            }else{
+                                ;
+                            }
+                        }
+                        if(x.equals("s")){
+                            System.out.println("s");
+
+                            if(xarduino+1<=8){
+                                xarduino++;
+                                ino(xarduino, yarduino);
+                            }else{
+                                ;
+                            }
+                        }
+                        if(x.equals("d")){
+                            System.out.println("d");
+                            if(yarduino+1<=8){
+                                yarduino++;
+                                ino(xarduino, yarduino);
+                            }else{
+                                ;
+                            }
+                        }
+                        if(x.equals("e")){
+                            ;
+                        }
+                    } catch (SerialPortException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            //sp.addEventListener(new SerialReceptor(sp, casillaArduino), SerialPort.MASK_RXCHAR);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void ino(int x, int y){
+        Button btn = buttons.finMatrix(prevx, prevy).getData();
+        Button btn2 = buttons.finMatrix(x, y).getData();
+        casillaArduino.setText("["+Integer.toString(xarduino)+", "+Integer.toString(yarduino)+"]");
+        btn.setStyle("-fx-border-color: #FF7F50");
+        prevx++;
+        prevy++;
+        btn2.setStyle("-fx-border-color: #0f3ba2");
+    }
+    public void banderaino(Button x, int i, int y){
+        Node2 node = matrix.finMatrix(i, y);
+            if (node.isOpen()) {
+                ;
+            } else {
+                if(node.isBomb()){
+                    x.setText("*");
+                    x.setStyle("-fx-background-color: #ffffff");
+                    win.setText("You lost!");
+                    enviar("tunem");
+                    pauseTimer();
+
+                }
+                else {
+                    enviar("tunenm");
+                    if(contJugadas % 5 == 0){
+                        Node4 x1 =safeList.random();
+                        pila.push(x1.getX(), x1.getY());
+                        int vecino = matrix.neightborsFind(i, y);
+                        String veci = "";
+                        if (vecino != 0){
+                            veci = Integer.toString(vecino);
+                        }else{
+                            ;
+                        }x.setText(veci);
+                        x.setStyle("-fx-background-color: #ffffff");
+                    }else{
+                        contJugadas++;
+                        int vecino = matrix.neightborsFind(i, y);
+                        String veci = "";
+                        if (vecino != 0){
+                            veci = Integer.toString(vecino);
+                        }else{
+                            ;
+                        }x.setText(veci);
+                        x.setStyle("-fx-background-color: #ffffff");
+                    }
+                }
+            } AI();
+        }
     /**
      *
      * @param x
@@ -541,19 +674,10 @@ public class HelloController implements Initializable {
      * bandera(): En realidad esta función es para poner banderas y desbloquear casillas pero me di cuenta del nombre muy tarde.
      * *BUG*: Si se intenta eliminar una bandera ya puesta, la función es llamada dos veces por alguna razón y lo que hace es quitarla y volverla a quitar con el mismo click.
      */
-
-    int contJugadas = 0;
-    Stack pila = new Stack();
-    public void clue() {
-        if(pila.isEmpty() == 0){
-            clue.setText("Vacío");
-        }else{
-            clue.setText(pila.pop());
-        }
-    }
     public void bandera(Button x, int i, int y) {
         x.setOnMouseClicked(event -> {
             Node2 node = matrix.finMatrix(i, y);
+            //Click derecho
             if (event.getButton() == MouseButton.SECONDARY) {
                 if (node.isFlag()){
                     if(node.isBomb()){
@@ -570,6 +694,7 @@ public class HelloController implements Initializable {
                 }if(node.isOpen()){
                     ;
                 }else {
+                    enviar("led");
                     if(node.isBomb()){
                         ++contminas;
                         minas.setText(Integer.toString(contminas));
@@ -580,6 +705,7 @@ public class HelloController implements Initializable {
                         node.setFlag(true);
                     }
                 }
+                //Click izquierdo
             } else if (event.getButton() == MouseButton.PRIMARY) {
                 if (node.isOpen()) {
                     ;
@@ -588,10 +714,12 @@ public class HelloController implements Initializable {
                         x.setText("*");
                         x.setStyle("-fx-background-color: #ffffff");
                         win.setText("You lost!");
+                        enviar("tunem");
                         pauseTimer();
 
                     }
                      else {
+                         enviar("tunenm");
                          if(contJugadas % 5 == 0){
                              Node4 x1 =safeList.random();
                              pila.push(x1.getX(), x1.getY());
@@ -619,6 +747,14 @@ public class HelloController implements Initializable {
             }
         });
     }
+
+    /**
+     * AI:
+     * Tipo void: Esta función se encarga de seleccionar una casilla despúes de que el jugador la haya seleccionado.
+     * modo Dummy: Selecciona cualquier casilla de la lista "Buttons".
+     * modo Normal: Selecciona una casilla de la lista segura, si la lista segura está vacía selecciona una de la lista incertidumbre.
+     * Bug: Aveces escoge casillas que no existen entonces da un error pero no hace que el código "crashee".
+     */
     public void AI() {
         if (difficulty == 2) {
             if (safeList.getSize() != 0) {
@@ -705,7 +841,22 @@ public class HelloController implements Initializable {
                 }
             }
         }
-
+    /**
+     * Lógica arduino
+     */
+    public void enviar(String msg){
+        try{
+            sp.writeString(msg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public int getPrevx(){
+        return this.prevx;
+    }
+    public int getPrevy(){
+        return this.prevy;
+    }
     /**
      *
      * @param event
@@ -716,6 +867,16 @@ public class HelloController implements Initializable {
         difficulty = 1;
         System.out.println(difficulty);
         Parent root = FXMLLoader.load(getClass().getResource("Juego.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+        matrix.displayinmatrix2();
+        pauseTimer();
+        pauseTimer();
+    }
+    public void switchToSceneCreditos(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("Creditos.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -759,11 +920,31 @@ public class HelloController implements Initializable {
 
     }
 
+
+    public void serial() {
+        try {
+            sp.addEventListener((SerialPortEvent event) -> {
+                if (event.isRXCHAR()) {
+                    try {
+                        String x = sp.readString();
+                        if (x.equals("w")) {
+                            System.out.println("Si funciona");
+                            //win.setText("Hola");
+                        }
+                    } catch (SerialPortException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (SerialPortException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         startTimer();
-        safeList.random();
-        System.out.println((int) (Math.random() * ((15) + 1)));
         /**
          * Adición de todos los botones a la lista "buttons"
          */
@@ -857,6 +1038,7 @@ public class HelloController implements Initializable {
         }
         /**
          * Creación de la lista segura.
+         * *BUG*: Aveces la lista segura mete bombas o tiles que no existe.
          */
         for (int u = 0; u<8; u++){
             for (int p = 0; p<8; p++){
@@ -872,6 +1054,42 @@ public class HelloController implements Initializable {
 
     }
 }
+/*
+class SerialReceptor implements SerialPortEventListener {
+    private SerialPort sp;
+    private Label x;
+    private int ejex = 0, ejey =0;
+    public SerialReceptor(SerialPort sp, Label x){
+        this.sp = sp;
+        this.x = x;
+    }
+    @Override
+    public void serialEvent(SerialPortEvent spe) {
+        try{
+            String msg = "";
+            msg = sp.readString(1);
+            System.out.println(msg);
+            if(msg.equals("w")){
+
+                if (ejex-1>0){
+                    ;
+                }else{
+                    System.out.println("Si funciona");
+                    /*
+                    ejex++;
+                    x.setText(Integer.toString(ejex)+", "+ Integer.toString(ejey));
+
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+
+ */
+
+
 
 
 

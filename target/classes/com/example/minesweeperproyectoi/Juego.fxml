@@ -115,7 +115,7 @@
             <Image url="@../../../img/laugh.png" />
          </image>
       </ImageView>
-      <Button fx:id="clue" layoutX="807.0" layoutY="109.0" mnemonicParsing="false" onAction="#clue" prefHeight="50.0" prefWidth="82.0" style="-fx-background-color: DARKSALMON;" text="Clue">
+      <Button fx:id="clue" layoutX="755.0" layoutY="102.0" mnemonicParsing="false" onAction="#clue" prefHeight="50.0" prefWidth="82.0" style="-fx-background-color: DARKSALMON;" text="Clue">
          <font>
             <Font name="Elephant" size="13.0" />
          </font>
@@ -151,5 +151,16 @@
             <Font name="Elephant" size="24.0" />
          </font>
       </Label>
+      <Button layoutX="743.0" layoutY="46.0" mnemonicParsing="false" onAction="#conectar" prefHeight="44.0" prefWidth="105.0" style="-fx-background-color: DARKSALMON;" text="Conectar Arduino">
+         <font>
+            <Font name="Elephant" size="10.0" />
+         </font>
+      </Button>
+      <Label layoutX="743.0" layoutY="22.0" prefHeight="18.0" prefWidth="149.0" text="Casilla seleccionada:">
+         <font>
+            <Font name="Elephant" size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="casillaArduino" layoutX="889.0" layoutY="23.0" text="0, 0" />
    </children>
 </AnchorPane>

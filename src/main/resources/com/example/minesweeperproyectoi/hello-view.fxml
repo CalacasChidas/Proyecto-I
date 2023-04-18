@@ -24,7 +24,7 @@
             <Font name="Showcard Gothic" size="11.0" />
          </font>
       </Button>
-      <Button layoutX="428.0" layoutY="163.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="96.0" text="Credits">
+      <Button layoutX="428.0" layoutY="163.0" mnemonicParsing="false" onAction="#switchToSceneCreditos" prefHeight="74.0" prefWidth="96.0" text="Credits">
          <font>
             <Font name="Showcard Gothic" size="11.0" />
          </font>
